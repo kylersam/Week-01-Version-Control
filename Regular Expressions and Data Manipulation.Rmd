@@ -1,0 +1,59 @@
+---
+title: "Regular Expressions and Data Manipulation"
+author: "Kyle Samson"
+date: "2025-01-08"
+output: html_document
+---
+
+# Introduction
+This document demonstrates how to use R and regular expressions to manipulate data in `measurements.csv`. The steps include:
+
+- Importing the dataset
+- Using `dplyr` and regex to modify the `Organism` column
+- Reordering columns and saving the modified dataset
+- Committing and pushing changes to GitHub
+
+# Load Required Libraries
+```{r setup, message=FALSE, warning=FALSE}
+library(dplyr)
+```
+
+# Step 2: Import Data
+```{r}
+# Read the CSV file into an object called MData
+MData <- read.csv("measurements.csv")
+
+# Display first few rows to confirm import
+head(MData)
+```
+
+# Step 3: Modify the Organism Column Using Regex
+```{r}
+# Use regex with dplyr to create a new column "Sp" that shortens genus names
+MData <- MData %>%
+  mutate(Sp = sub("^(\\w)\\w+ (\\w+)", "\\1. \\2", Organism))
+
+# Check the first few rows to ensure transformation worked
+head(MData)
+```
+
+# Step 4: Reorder Columns
+```{r}
+# Create a new dataset with 'Sp' replacing 'Organism' in the first column
+MData_new <- MData %>%
+  select(Sp, everything(), -Organism)  # Move 'Sp' to the front and remove 'Organism'
+
+# Display first few rows to verify column order
+head(MData_new)
+```
+
+# Step 5: Save Modified Dataset
+```{r}
+# Save the new dataset as MeasShort.csv
+write.csv(MData_new, "MeasShort.csv", row.names = FALSE)
+```
+
+
+# Conclusion
+This report demonstrates how to use `dplyr` and regular expressions in R to clean and process data efficiently. The modified dataset has been saved as `MeasShort.csv`, and all changes have been pushed to GitHub.
+
